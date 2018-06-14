@@ -89,7 +89,7 @@
     }
 }
 
-// Use this to wait for entire queue to finish executing. Needs to build the queue beforehand.
+// Use this to wait for entire queue to finish executing. Use case: Longer background operations that does not require updates on UI thread.
 - (void)executeFullQueueWithCallback:(void(^)(void))callback {
     // We are not executing yet, start executing queue in background
     if (_state != QueueRunning) {
@@ -101,7 +101,7 @@
     }
 }
 
-// Use this to start queue immediately and perform callback for each item. No need to build up queue first.
+// Use this to start queue immediately. Use case: TableViews
 - (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel {
     
     [self addOperation:block key:key cancelExisting:cancel];
