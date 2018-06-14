@@ -12,6 +12,7 @@
 typedef void (^Operation)(void);
 
 typedef enum {
+    QueueStart,
     QueueRunning,
     QueuePaused,
     QueueStopped
@@ -25,4 +26,10 @@ typedef enum {
 @interface Queue : NSObject
 @property (nonatomic, readonly) QueueStateEnum state;
 @property (nonatomic, readonly) QueueTypeEnum type;
+
+- (instancetype)init:(QueueTypeEnum)type;
+- (void)executeFullQueueWithCallback:(void(^)(void))callback;
+- (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel;
+- (void)cancelOperationsWithKeys:(NSArray *)keys;
+- (void)cancelAllOperations;
 @end

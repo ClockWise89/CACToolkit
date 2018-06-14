@@ -11,15 +11,13 @@
 @implementation Queue {
     NSMutableArray *pendingOperations;
     NSMutableDictionary *queue;
-    
-    /* TODO
-     Need a way to add operation and then callback somehow. Right now I can only add code of blocks and execute them...maybe this is fine? Start manually or always start queue instantly???
-     */
 }
 
-- (instancetype)init {
+- (instancetype)init:(QueueTypeEnum)type {
     self = [super init];
     if (self) {
+        _type = type;
+        _state = QueueStopped;
         pendingOperations = [NSMutableArray new];
         queue = [NSMutableDictionary new];
     }
@@ -39,6 +37,24 @@
         // Add operation to queue
         [pendingOperations addObject:key];
         queue[key] = block;
+    }
+}
+
+- (void)cancelAllOperations {
+    @synchronized (pendingOperations) {
+        [pendingOperations removeAllObjects];
+        [queue removeAllObjects];
+    }
+}
+
+- (void)cancelOperationsWithKeys:(NSArray *)keys {
+    @synchronized (pendingOperations) {
+        for (NSString *key in keys) {
+            if (queue[key]) {
+                [queue removeObjectForKey:key];
+                [pendingOperations removeObject:key];
+            }
+        }
     }
 }
 
@@ -73,14 +89,31 @@
     }
 }
 
-- (void)startExecution {
+// Use this to wait for entire queue to finish executing. Needs to build the queue beforehand.
+- (void)executeFullQueueWithCallback:(void(^)(void))callback {
     // We are not executing yet, start executing queue in background
     if (_state != QueueRunning) {
+        _state = QueueRunning;
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+            [self execute];
+            callback();
+        });
+    }
+}
+
+// Use this to start queue immediately and perform callback for each item. No need to build up queue first.
+- (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel {
+    
+    [self addOperation:block key:key cancelExisting:cancel];
+    @synchronized (pendingOperations) {
+        if (pendingOperations.count > 0 && _state != QueueRunning) _state = QueueStart;
+    }
+    
+    if (_state == QueueStart) {
         _state = QueueRunning;
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
             [self execute];
         });
     }
 }
-
 @end

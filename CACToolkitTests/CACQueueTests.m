@@ -7,32 +7,40 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "Queue.h"
 
-@interface CACToolkitTests : XCTestCase
-
+@interface CACQueueTests : XCTestCase
+@property (nonatomic, strong) Queue *testQueue;
 @end
 
-@implementation CACToolkitTests
+@implementation CACQueueTests
 
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    _testQueue = [[Queue alloc] init:QueueFIFO];
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+    [_testQueue cancelAllOperations];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testFIFO {
+    for (int i=0;i<1000;i++) {
+        [_testQueue executeOperation:^{
+            int count = 0;
+            for (int i=0; i<100000; i++) {
+                count++;
+            }
+        } key:[NSString stringWithFormat:@"%i", i] cancelExisting:YES];
+    }
 }
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
     [self measureBlock:^{
-        // Put the code you want to measure the time of here.
     }];
 }
 

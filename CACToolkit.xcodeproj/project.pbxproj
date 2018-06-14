@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9D36AC6A20D2CCF500900D1A /* CACToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D36AC6020D2CCF400900D1A /* CACToolkit.framework */; };
-		9D36AC6F20D2CCF500900D1A /* CACToolkitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D36AC6E20D2CCF500900D1A /* CACToolkitTests.m */; };
+		9D36AC6F20D2CCF500900D1A /* CACQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D36AC6E20D2CCF500900D1A /* CACQueueTests.m */; };
 		9D36AC7120D2CCF500900D1A /* CACToolkit.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D36AC6320D2CCF400900D1A /* CACToolkit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D696A7F20D2D02000A7781D /* Queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D696A7D20D2D02000A7781D /* Queue.h */; };
 		9D696A8020D2D02000A7781D /* Queue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D696A7E20D2D02000A7781D /* Queue.m */; };
@@ -29,7 +29,7 @@
 		9D36AC6320D2CCF400900D1A /* CACToolkit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CACToolkit.h; sourceTree = "<group>"; };
 		9D36AC6420D2CCF400900D1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9D36AC6920D2CCF500900D1A /* CACToolkitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CACToolkitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D36AC6E20D2CCF500900D1A /* CACToolkitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CACToolkitTests.m; sourceTree = "<group>"; };
+		9D36AC6E20D2CCF500900D1A /* CACQueueTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CACQueueTests.m; sourceTree = "<group>"; };
 		9D36AC7020D2CCF500900D1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9D696A7D20D2D02000A7781D /* Queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Queue.h; sourceTree = "<group>"; };
 		9D696A7E20D2D02000A7781D /* Queue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Queue.m; sourceTree = "<group>"; };
@@ -85,7 +85,7 @@
 		9D36AC6D20D2CCF500900D1A /* CACToolkitTests */ = {
 			isa = PBXGroup;
 			children = (
-				9D36AC6E20D2CCF500900D1A /* CACToolkitTests.m */,
+				9D36AC6E20D2CCF500900D1A /* CACQueueTests.m */,
 				9D36AC7020D2CCF500900D1A /* Info.plist */,
 			);
 			path = CACToolkitTests;
@@ -218,7 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D36AC6F20D2CCF500900D1A /* CACToolkitTests.m in Sources */,
+				9D36AC6F20D2CCF500900D1A /* CACQueueTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
