@@ -58,6 +58,20 @@
     }
 }
 
+- (void)cancelRunningOperation {
+    @synchronized (pendingOperations) {
+        NSString *key;
+        if (_type == QueueLIFO) {
+            key = [pendingOperations lastObject];
+            
+        } else if (_type == QueueFIFO) {
+            key = [pendingOperations firstObject];
+        }
+        
+        [self cancelOperationsWithKeys:@[key]];
+    }
+}
+
 - (void)execute {
     Operation block;
     NSString *key;
@@ -102,7 +116,7 @@
 }
 
 // Use this to start queue immediately. Use case: TableViews
-- (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel {
+- (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel withCallback:(void (^)(void))callback{
     
     [self addOperation:block key:key cancelExisting:cancel];
     @synchronized (pendingOperations) {
@@ -113,7 +127,42 @@
         _state = QueueRunning;
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
             [self execute];
+            callback();
         });
+    
+        // OUTCOMMENTED CODE IS TO CANCEL RUNNING OPERATION AND PLACE IT LAST WHEN WE ADD A NEW OPERATION
+//    } else if (_state == QueueRunning) {
+//        @synchronized (pendingOperations) {
+//            NSString *runningKey;
+//
+//            if (_type == QueueFIFO) {
+//                runningKey = [pendingOperations firstObject];
+//
+//
+//
+//            } else if(_type == QueueLIFO) {
+//                runningKey = [pendingOperations lastObject];
+//
+//
+//                if (queue[runningKey]) {
+//                    if (!cancel) return; // Operation already in queue and we do not cancel
+//                    id object = queue[runningKey];
+//
+//                    // Operation already in queue, we need to cancel it
+//                    [queue removeObjectForKey:runningKey];
+//                    [pendingOperations removeObject:runningKey];
+//
+//                    [pendingOperations addObject:runningKey];
+//                    queue[runningKey] = object;
+//                }
+//
+//            }
+//        }
+//
+//        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+//            [self execute];
+//            callback();
+//        });
     }
 }
 @end

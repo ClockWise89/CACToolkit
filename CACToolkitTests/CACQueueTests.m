@@ -10,7 +10,8 @@
 #import "Queue.h"
 
 @interface CACQueueTests : XCTestCase
-@property (nonatomic, strong) Queue *testQueue;
+@property (nonatomic, strong) Queue *queue;
+@property (nonatomic) QueueTypeEnum type;
 @end
 
 @implementation CACQueueTests
@@ -18,24 +19,50 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    _testQueue = [[Queue alloc] init:QueueFIFO];
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
-    [_testQueue cancelAllOperations];
+    [_queue cancelAllOperations];
 }
 
 - (void)testFIFO {
-    for (int i=0;i<1000;i++) {
-        [_testQueue executeOperation:^{
-            int count = 0;
-            for (int i=0; i<100000; i++) {
-                count++;
-            }
-        } key:[NSString stringWithFormat:@"%i", i] cancelExisting:YES];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"FIFO Queue"];
+    __block NSMutableArray *result = [NSMutableArray new];
+    
+    _queue = [[Queue alloc] init:QueueLIFO];
+    int limit = 15;
+    for (int i=0;i<limit;i++) {
+        [_queue executeOperation:^{
+    
+            [NSThread sleepForTimeInterval:0.3f];
+            NSLog(@"Operation %i is done.", i);
+            [result addObject: [NSString stringWithFormat:@"%i", i]];
+            
+            
+            
+        } key:[NSString stringWithFormat:@"%i", i] cancelExisting:YES withCallback:^{
+            [expectation fulfill];
+        }];
     }
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        NSLog(@"Finishing result: %@", result);
+        
+    }];
+}
+
+- (void)testLIFO {
+    _queue = [[Queue alloc] init:QueueLIFO];
+}
+
+- (void)testCancelAllOperations {
+    
+}
+
+- (void)testCancelAllOperationsWithKeys {
+    
 }
 
 - (void)testPerformanceExample {

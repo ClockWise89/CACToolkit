@@ -29,7 +29,7 @@ typedef enum {
 
 - (instancetype)init:(QueueTypeEnum)type;
 - (void)executeFullQueueWithCallback:(void(^)(void))callback;
-- (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel;
+- (void)executeOperation:(Operation)block key:(NSString*)key cancelExisting:(BOOL)cancel withCallback:(void(^)(void))callback;
 - (void)cancelOperationsWithKeys:(NSArray *)keys;
 - (void)cancelAllOperations;
 @end
