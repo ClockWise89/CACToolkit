@@ -28,7 +28,7 @@
 }
 
 - (void)testLIFO {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"FIFO Queue"];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"LIFO Queue"];
     __block NSMutableDictionary *result = [NSMutableDictionary new];
     
     _queue = [[Queue alloc] init:QueueLIFO];
@@ -68,7 +68,41 @@
 }
 
 - (void)testFIFO {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"FIFO Queue"];
+    __block NSMutableDictionary *result = [NSMutableDictionary new];
+    
     _queue = [[Queue alloc] init:QueueFIFO];
+    int limit = 15;
+    __block int done = 1;
+    for (int i=1;i<limit;i++) {
+        
+        __block NSString *added = [NSString stringWithFormat:@"%i", i];
+        [_queue executeOperation:^{
+            [NSThread sleepForTimeInterval:0.001f];
+            NSLog(@"Operation %i is done.", i);
+            
+            NSString *finished = [NSString stringWithFormat:@"%i", done];
+            done++;
+            [result setObject:finished forKey:added];
+            
+        } key:[NSString stringWithFormat:@"%i", i] cancelExisting:YES withCallback:^{
+            [expectation fulfill];
+        }];
+    }
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        NSLog(@"Finishing result: %@", result);
+        
+        // Test is successful if added and finished are the same values
+        __block BOOL success = YES;
+        [result enumerateKeysAndObjectsUsingBlock:^(NSString *added, NSString *finished, BOOL *stop) {
+            if ([added intValue] != [finished intValue]) {
+                success = NO;
+            }
+        }];
+        
+        XCTAssert(success, @"Should be true");
+    }];
 }
 
 - (void)testCancelAllOperations {
